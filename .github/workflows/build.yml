@@ -1,18 +1,26 @@
-name: Build SDK
+name: Build & Test
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
+    name: Build SDK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+
       - name: Build SDK
         run: |
           export BUILD_JOB_ID=$GITHUB_RUN_ID
@@ -21,7 +29,75 @@ jobs:
           yarn build
         env:
           SWAGGERHUB_API_KEY: ${{ secrets.SWAGGERHUB_API_KEY }}
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+
+      - uses: actions/upload-artifact@v4
         with:
           name: ai-security-sdk
           path: dist/
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ai-security-sdk
+          path: dist/
+
+      - name: TypeScript compile check
+        run: yarn tsc --noEmit
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    env:
+      CP_CI_CLIENT_ID: ${{ secrets.CP_CI_CLIENT_ID }}
+      CP_CI_ACCESS_KEY: ${{ secrets.CP_CI_ACCESS_KEY }}
+      CP_CI_GATEWAY: ${{ secrets.CP_CI_GATEWAY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ai-security-sdk
+          path: dist/
+
+      - name: Check secrets available
+        id: secrets-check
+        run: |
+          if [ -z "$CP_CI_CLIENT_ID" ]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Skipping integration tests — secrets not configured"
+          else
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run integration tests
+        if: steps.secrets-check.outputs.available == 'true'
+        run: yarn test
+        env:
+          CP_CI_CLIENT_ID: ${{ secrets.CP_CI_CLIENT_ID }}
+          CP_CI_ACCESS_KEY: ${{ secrets.CP_CI_ACCESS_KEY }}
+          CP_CI_GATEWAY: ${{ secrets.CP_CI_GATEWAY }}
