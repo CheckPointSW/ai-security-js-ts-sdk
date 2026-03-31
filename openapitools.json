@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.12.0",
+    "generators": {
+      "typescriptStub": {
+        "generatorName": "typescript-axios",
+        "output": "src/generated",
+        "glob": "src/generated/specs/swagger.json",
+        "additionalProperties": {
+          "withInterfaces": true,
+          "typescriptThreePlus": true,
+          "useSingleRequestParameter": false
+        }
+      }
+    }
+  }
+}

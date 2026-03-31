@@ -1,0 +1,1 @@
+export const KEEP_ALIVE_GRACE_SECONDS = 40;

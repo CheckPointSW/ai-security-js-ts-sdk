@@ -1,0 +1,12 @@
+src/
+tests/
+scripts/
+.github/
+.gitignore
+tsconfig*.json
+.mocharc.yml
+openapitools.json
+*.env
+.DS_Store
+coverage/
+node_modules/
