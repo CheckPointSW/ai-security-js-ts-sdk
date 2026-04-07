@@ -103,7 +103,14 @@ describe('# AI Security API', () => {
 			await ha.chatsPolicyApi.patchChatsPolicyExternalV1ChatsRulePatchPolicyPatch({
 				patchChatsPolicyRequest: {
 					rule_id: ruleId,
-					policy: { action: 'detect' },
+					policy: {
+						action: 'detect',
+						data_types: [{
+							id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
+							name: 'Credit Card Number',
+							type: 'PRE_DEFINED',
+						}],
+					},
 				},
 			});
 			const rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
@@ -283,6 +290,11 @@ describe('# AI Security API', () => {
 						action: 'detect',
 						logging: LoggingStatus.Enabled,
 						services_and_application: { mode: SelectionMode.All },
+						data_types: [{
+							id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
+							name: 'Credit Card Number',
+							type: 'PRE_DEFINED',
+						}],
 					},
 				},
 			});
