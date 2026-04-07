@@ -13,6 +13,16 @@
           "typescriptThreePlus": true,
           "useSingleRequestParameter": false
         }
+      },
+      "browseTypescriptStub": {
+        "generatorName": "typescript-axios",
+        "output": "src/generated-browse",
+        "glob": "src/generated-browse/specs/swagger.json",
+        "additionalProperties": {
+          "withInterfaces": true,
+          "typescriptThreePlus": true,
+          "useSingleRequestParameter": false
+        }
       }
     }
   }

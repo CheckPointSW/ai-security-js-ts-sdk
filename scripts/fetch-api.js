@@ -1,41 +1,56 @@
 const fs = require('fs');
 const path = require('path');
 
-const SPEC_NAME = process.env.SPEC_NAME || 'checkpoint-ai-security';
 const API_OWNER = 'Check-Point';
-const LOCAL_SPEC_PATH = process.env.LOCAL_GENERATED_API_PATH;
 const SWAGGERHUB_API_KEY = process.env.SWAGGERHUB_API_KEY;
-const OUTPUT_DIR = path.join(__dirname, '..', 'src', 'generated', 'specs');
 
-async function fetchSpec() {
-	fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+const SPECS = [
+	{
+		name: process.env.SPEC_NAME || 'checkpoint-ai-security',
+		localPathEnv: 'LOCAL_GENERATED_API_PATH',
+		outputDir: path.join(__dirname, '..', 'src', 'generated', 'specs'),
+	},
+	{
+		name: process.env.BROWSE_SPEC_NAME || 'checkpoint-browse-security',
+		localPathEnv: 'LOCAL_BROWSE_SPEC_PATH',
+		outputDir: path.join(__dirname, '..', 'src', 'generated-browse', 'specs'),
+	},
+];
 
-	if (LOCAL_SPEC_PATH) {
-		console.log(`[fetch-api] Using local spec from: ${LOCAL_SPEC_PATH}`);
-		fs.copyFileSync(LOCAL_SPEC_PATH, path.join(OUTPUT_DIR, 'swagger.json'));
-		fs.writeFileSync(path.join(OUTPUT_DIR, 'spec'), SPEC_NAME);
-		return;
-	}
-
-	const headers = { 'Content-Type': 'application/json' };
-	if (SWAGGERHUB_API_KEY) headers['Authorization'] = `Bearer ${SWAGGERHUB_API_KEY}`;
-
-	console.log(`[fetch-api] Fetching spec for ${API_OWNER}/${SPEC_NAME}...`);
+async function downloadSpec(specName, headers) {
 	const nodeFetch = require('node-fetch');
 	const fetch = nodeFetch.default || nodeFetch;
 
-	const listRes = await fetch(`https://api.swaggerhub.com/apis/${API_OWNER}/${SPEC_NAME}`, { headers });
+	console.log(`[fetch-api] Fetching spec for ${API_OWNER}/${specName}...`);
+	const listRes = await fetch(`https://api.swaggerhub.com/apis/${API_OWNER}/${specName}`, { headers });
 	const listData = await listRes.json();
 	const latest = listData.apis[listData.apis.length - 1];
 	const swaggerUrl = latest.properties.find(p => p.type === 'Swagger')?.url;
 
 	console.log(`[fetch-api] Downloading from: ${swaggerUrl}`);
 	const specRes = await fetch(swaggerUrl, { headers });
-	const specData = await specRes.json();
-
-	fs.writeFileSync(path.join(OUTPUT_DIR, 'swagger.json'), JSON.stringify(specData, null, 2));
-	fs.writeFileSync(path.join(OUTPUT_DIR, 'spec'), SPEC_NAME);
-	console.log('[fetch-api] Spec ready.');
+	return await specRes.json();
 }
 
-fetchSpec().catch(e => { console.error(e); process.exit(1); });
+async function fetchAllSpecs() {
+	const headers = { 'Content-Type': 'application/json' };
+	if (SWAGGERHUB_API_KEY) headers['Authorization'] = `Bearer ${SWAGGERHUB_API_KEY}`;
+
+	for (const spec of SPECS) {
+		fs.mkdirSync(spec.outputDir, { recursive: true });
+		const localPath = process.env[spec.localPathEnv];
+
+		console.log(`[fetch-api] Processing spec: ${spec.name}`);
+		if (localPath) {
+			console.log(`[fetch-api] Using local spec from: ${localPath}`);
+			fs.copyFileSync(localPath, path.join(spec.outputDir, 'swagger.json'));
+		} else {
+			const specData = await downloadSpec(spec.name, headers);
+			fs.writeFileSync(path.join(spec.outputDir, 'swagger.json'), JSON.stringify(specData, null, 2));
+		}
+		fs.writeFileSync(path.join(spec.outputDir, 'spec'), spec.name);
+		console.log(`[fetch-api] Spec "${spec.name}" ready.`);
+	}
+}
+
+fetchAllSpecs().catch(e => { console.error(e); process.exit(1); });

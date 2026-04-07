@@ -1,7 +1,7 @@
 {
   "name": "@chkp/ai-security-sdk",
   "version": "1.0.0",
-  "description": "Check Point AI Security Official JS/TS SDK",
+  "description": "Check Point AI Security Official JS/TS SDK (Workforce AI + Browse Security)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist/"],
@@ -17,7 +17,7 @@
     "type": "git",
     "url": "https://github.com/CheckPointSW/ai-security-js-ts-sdk"
   },
-  "keywords": ["checkpoint", "ai", "security", "sdk", "workforce-ai", "ai-security"],
+  "keywords": ["checkpoint", "ai", "security", "sdk", "workforce-ai", "ai-security", "browse-security"],
   "author": "Haim Kastner <haimk@checkpoint.com>",
   "license": "MIT",
   "dependencies": {
