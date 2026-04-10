@@ -12,7 +12,8 @@
           "withInterfaces": true,
           "typescriptThreePlus": true,
           "useSingleRequestParameter": false
-        }
+        },
+        "templateDir": "#{cwd}/resources/typescript-axios"
       },
       "browseTypescriptStub": {
         "generatorName": "typescript-axios",
@@ -22,7 +23,8 @@
           "withInterfaces": true,
           "typescriptThreePlus": true,
           "useSingleRequestParameter": false
-        }
+        },
+        "templateDir": "#{cwd}/resources/typescript-axios"
       }
     }
   }

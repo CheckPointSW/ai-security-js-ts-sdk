@@ -1,7 +1,7 @@
 import { InfinityPortalAuth, SDKConnectionState } from '../interfaces/infra';
 import { SessionManager } from './session.manager';
-import { Configuration } from '../generated';
-import { ApiAccessors } from '../generated/api.accessors';
+import { logger } from './debug.logger';
+import { Configuration, ApiAccessors } from '../generated';
 
 export class AISecurity extends ApiAccessors {
 	private sessionManager: SessionManager;
@@ -9,6 +9,7 @@ export class AISecurity extends ApiAccessors {
 	constructor() {
 		super();
 		this.sessionManager = new SessionManager();
+		logger(`A new AISecurity instance created, version info: ${AISecurity.info()}`);
 	}
 
 	public async connect(auth: InfinityPortalAuth): Promise<void> {

@@ -1,14 +1,16 @@
 import { InfinityPortalAuth, SDKConnectionState } from '../interfaces/infra';
 import { SessionManager } from './session.manager';
-import { Configuration } from '../generated-browse/configuration';
-import { BrowseApiAccessors } from '../generated-browse/api.accessors';
+import { logger } from './debug.logger';
+import { Configuration } from '../generated-browse';
+import { ApiAccessors } from '../generated-browse';
 
-export class BrowseSecurity extends BrowseApiAccessors {
+export class BrowseSecurity extends ApiAccessors {
 	private sessionManager: SessionManager;
 
 	constructor() {
 		super();
 		this.sessionManager = new SessionManager();
+		logger(`A new BrowseSecurity instance created, version info: ${BrowseSecurity.info()}`);
 	}
 
 	public async connect(auth: InfinityPortalAuth): Promise<void> {
@@ -33,17 +35,5 @@ export class BrowseSecurity extends BrowseApiAccessors {
 		}
 	}
 
-	_getConfig(): Configuration {
-		// Re-wrap the session's config data into the browse-specific Configuration type
-		const src = this.sessionManager.configuration;
-		return new Configuration({
-			basePath: src.basePath,
-			accessToken: src.accessToken,
-			baseOptions: {
-				headers: {
-					'x-api-source': 'js_sdk',
-				},
-			},
-		});
-	}
+	_getConfig(): Configuration { return this.sessionManager.configuration; }
 }

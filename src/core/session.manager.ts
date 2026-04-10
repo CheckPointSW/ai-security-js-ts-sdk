@@ -27,6 +27,7 @@ export class SessionManager {
 		return new Configuration({
 			basePath: this.gateway,
 			accessToken: this.jwtToken,
+			clientId: this.auth?.clientId,
 		});
 	}
 
