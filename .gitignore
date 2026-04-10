@@ -1,6 +1,7 @@
 node_modules/
 dist/
 src/generated/
+src/generated-browse
 *.env
 .DS_Store
 coverage/

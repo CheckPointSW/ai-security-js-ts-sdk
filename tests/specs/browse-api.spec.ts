@@ -11,7 +11,7 @@ describe('# Browse Security API', () => {
 		this.timeout(15000);
 
 		it('should get DLP rulebase', async () => {
-			const rb = await hb.dlpPolicyApi.getDlpRulebaseExternalV1DlpRulebaseGet();
+			const rb = await hb.DLPPolicyApi.getDlpRulebaseExternalV1DlpRulebaseGet();
 			assert.ok(rb.data, 'data should be returned');
 		});
 	});
@@ -22,7 +22,7 @@ describe('# Browse Security API', () => {
 		this.timeout(15000);
 
 		it('should get web access rulebase', async () => {
-			const rb = await hb.webAccessPolicyApi.getWebAccessRulebaseExternalV1WebAccessRulebaseGet();
+			const rb = await hb.WebAccessPolicyApi.getWebAccessRulebaseExternalV1WebAccessRulebaseGet();
 			assert.ok(rb.data, 'data should be returned');
 		});
 	});
@@ -33,7 +33,7 @@ describe('# Browse Security API', () => {
 		this.timeout(15000);
 
 		it('should get secure browsing rulebase', async () => {
-			const rb = await hb.secureBrowsingPolicyApi.getSecureBrowsingRulebaseExternalV1SecureBrowsingRulebaseGet();
+			const rb = await hb.SecureBrowsingPolicyApi.getSecureBrowsingRulebaseExternalV1SecureBrowsingRulebaseGet();
 			assert.ok(rb.data, 'data should be returned');
 		});
 	});
@@ -44,12 +44,12 @@ describe('# Browse Security API', () => {
 		this.timeout(15000);
 
 		it('should get predefined DLP datatypes', async () => {
-			const result = await hb.dlpDatatypesApi.getPredefinedDatatypesExternalV1DlpDatatypesPredefinedGet();
+			const result = await hb.DLPDatatypesApi.getPredefinedDatatypesExternalV1DlpDatatypesPredefinedGet();
 			assert.ok(result.data, 'data should be returned');
 		});
 
 		it('should get all DLP datatypes', async () => {
-			const result = await hb.dlpDatatypesApi.getAllDatatypesExternalV1DlpDatatypesAllGet();
+			const result = await hb.DLPDatatypesApi.getAllDatatypesExternalV1DlpDatatypesAllGet();
 			assert.ok(result.data, 'data should be returned');
 		});
 	});
@@ -60,12 +60,12 @@ describe('# Browse Security API', () => {
 		this.timeout(15000);
 
 		it('should get file protection objects', async () => {
-			const result = await hb.objectsApi.getFileProtectionObjectsExternalV1ObjectsFileProtectionGet();
+			const result = await hb.ObjectsApi.getFileProtectionObjectsExternalV1ObjectsFileProtectionGet();
 			assert.ok(result.data, 'data should be returned');
 		});
 
 		it('should get domains objects', async () => {
-			const result = await hb.objectsApi.getDomainsObjectsExternalV1ObjectsDomainsGet();
+			const result = await hb.ObjectsApi.getDomainsObjectsExternalV1ObjectsDomainsGet();
 			assert.ok(result.data, 'data should be returned');
 		});
 	});

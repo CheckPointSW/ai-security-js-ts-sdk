@@ -17,7 +17,7 @@ async function cleanupRulebase(getRulebase: () => Promise<any>) {
 		const rb = await getRulebase();
 		for (const rule of rb.data.rules || []) {
 			try {
-				await ha.rulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId: rule.rule_id });
+				await ha.RulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId: rule.rule_id });
 			} catch { /* ignore */ }
 		}
 	} catch { /* ignore */ }
@@ -28,9 +28,9 @@ describe('# AI Security API', () => {
 	// ── Cleanup before all tests ──
 	before(async function () {
 		this.timeout(30000);
-		await cleanupRulebase(() => ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet());
-		await cleanupRulebase(() => ha.aiAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet());
-		await cleanupRulebase(() => ha.agentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet());
+		await cleanupRulebase(() => ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet());
+		await cleanupRulebase(() => ha.AIAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet());
+		await cleanupRulebase(() => ha.AgentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet());
 		// Wait for API to propagate deletes
 		await new Promise(r => setTimeout(r, 2000));
 	});
@@ -38,9 +38,9 @@ describe('# AI Security API', () => {
 	// ── Cleanup after all tests ──
 	after(async function () {
 		this.timeout(30000);
-		await cleanupRulebase(() => ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet());
-		await cleanupRulebase(() => ha.aiAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet());
-		await cleanupRulebase(() => ha.agentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet());
+		await cleanupRulebase(() => ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet());
+		await cleanupRulebase(() => ha.AIAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet());
+		await cleanupRulebase(() => ha.AgentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet());
 	});
 
 	// ── GenAI Chats Rule CRUD ──
@@ -50,7 +50,7 @@ describe('# AI Security API', () => {
 		let ruleId: string;
 
 		it('should create a chats rule', async () => {
-			const result = await ha.chatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
+			const result = await ha.ChatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
 				addChatsRuleRequest: {
 					name: 'Test DLP Rule',
 					description: 'Integration test',
@@ -78,7 +78,7 @@ describe('# AI Security API', () => {
 		});
 
 		it('should read the chats rule back', async () => {
-			const rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			const rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.ok(rule, 'rule should exist in rulebase');
 			assert.strictEqual(rule.name, 'Test DLP Rule');
@@ -86,21 +86,21 @@ describe('# AI Security API', () => {
 		});
 
 		it('should update rule info', async () => {
-			await ha.rulebaseApi.setRuleInfoExternalV1RulesSetInfoPut({
+			await ha.RulebaseApi.setRuleInfoExternalV1RulesSetInfoPut({
 				commonSetInfoRequest: {
 					rule_id: ruleId,
 					name: 'Test DLP Rule Updated',
 					description: 'Updated',
 				},
 			});
-			const rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			const rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.strictEqual(rule.name, 'Test DLP Rule Updated');
 			assert.strictEqual(rule.description, 'Updated');
 		});
 
 		it('should patch chats policy', async () => {
-			await ha.chatsPolicyApi.patchChatsPolicyExternalV1ChatsRulePatchPolicyPatch({
+			await ha.ChatsPolicyApi.patchChatsPolicyExternalV1ChatsRulePatchPolicyPatch({
 				patchChatsPolicyRequest: {
 					rule_id: ruleId,
 					policy: {
@@ -113,23 +113,23 @@ describe('# AI Security API', () => {
 					},
 				},
 			});
-			const rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			const rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.strictEqual(rule.policy.action, 'detect');
 		});
 
 		it('should disable the rule', async () => {
-			await ha.rulebaseApi.setActiveExternalV1RulesSetActivePut({
+			await ha.RulebaseApi.setActiveExternalV1RulesSetActivePut({
 				commonSetActiveRequest: { rule_id: ruleId, active: false },
 			});
-			const rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			const rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.strictEqual(rule.active, false);
 		});
 
 		it('should delete the rule', async () => {
-			await ha.rulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
-			const rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			await ha.RulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
+			const rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.ok(!rule, 'rule should not exist after delete');
 		});
@@ -142,7 +142,7 @@ describe('# AI Security API', () => {
 		let ruleId: string;
 
 		it('should create an access rule', async () => {
-			const result = await ha.aiAccessPolicyApi.addAiAccessRuleExternalV1AiAccessRulePost({
+			const result = await ha.AIAccessPolicyApi.addAiAccessRuleExternalV1AiAccessRulePost({
 				addAccessRuleRequest: {
 					name: 'Test Access Rule',
 					description: 'Integration test',
@@ -167,28 +167,28 @@ describe('# AI Security API', () => {
 		});
 
 		it('should read the access rule back', async () => {
-			const rb = await ha.aiAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
+			const rb = await ha.AIAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.ok(rule, 'rule should exist in rulebase');
 			assert.strictEqual(rule.name, 'Test Access Rule');
 		});
 
 		it('should update rule info', async () => {
-			await ha.rulebaseApi.setRuleInfoExternalV1RulesSetInfoPut({
+			await ha.RulebaseApi.setRuleInfoExternalV1RulesSetInfoPut({
 				commonSetInfoRequest: {
 					rule_id: ruleId,
 					name: 'Test Access Rule v2',
 					description: 'v2',
 				},
 			});
-			const rb = await ha.aiAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
+			const rb = await ha.AIAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.strictEqual(rule.name, 'Test Access Rule v2');
 		});
 
 		it('should delete the access rule', async () => {
-			await ha.rulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
-			const rb = await ha.aiAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
+			await ha.RulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
+			const rb = await ha.AIAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.ok(!rule, 'rule should not exist after delete');
 		});
@@ -201,7 +201,7 @@ describe('# AI Security API', () => {
 		let ruleId: string;
 
 		it('should create an agents rule', async () => {
-			const result = await ha.agentsPolicyApi.addAgentsRuleExternalV1AgentsRulePost({
+			const result = await ha.AgentsPolicyApi.addAgentsRuleExternalV1AgentsRulePost({
 				addMCPServerRuleRequest: {
 					name: 'Test Agents Rule',
 					description: 'Integration test',
@@ -225,14 +225,14 @@ describe('# AI Security API', () => {
 		});
 
 		it('should read the agents rule back', async () => {
-			const rb = await ha.agentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet();
+			const rb = await ha.AgentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet();
 			const rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.ok(rule, 'rule should exist in rulebase');
 			assert.strictEqual(rule.name, 'Test Agents Rule');
 		});
 
 		it('should delete the agents rule', async () => {
-			await ha.rulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
+			await ha.RulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
 		});
 	});
 
@@ -242,18 +242,18 @@ describe('# AI Security API', () => {
 		this.timeout(15000);
 
 		it('should get chats rulebase', async () => {
-			const rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			const rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			assert.ok(Array.isArray(rb.data.rules), 'rules should be an array');
 			assert.strictEqual(typeof rb.data.rulebase_version, 'number');
 		});
 
 		it('should get access rulebase', async () => {
-			const rb = await ha.aiAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
+			const rb = await ha.AIAccessPolicyApi.getAiAccessRulebaseExternalV1AiAccessRulebaseGet();
 			assert.ok(Array.isArray(rb.data.rules), 'rules should be an array');
 		});
 
 		it('should get agents rulebase', async () => {
-			const rb = await ha.agentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet();
+			const rb = await ha.AgentsPolicyApi.getAgentsRulebaseExternalV1AgentsRulebaseGet();
 			assert.ok(Array.isArray(rb.data.rules), 'rules should be an array');
 		});
 	});
@@ -264,12 +264,12 @@ describe('# AI Security API', () => {
 		this.timeout(15000);
 
 		it('should get predefined DLP datatypes', async () => {
-			const result = await ha.dlpDatatypesApi.getPredefinedDatatypesExternalV1DlpDatatypesPredefinedGet();
+			const result = await ha.DLPDatatypesApi.getPredefinedDatatypesExternalV1DlpDatatypesPredefinedGet();
 			assert.ok(result.data, 'data should be returned');
 		});
 
 		it('should get all DLP datatypes', async () => {
-			const result = await ha.dlpDatatypesApi.getAllDatatypesExternalV1DlpDatatypesAllGet();
+			const result = await ha.DLPDatatypesApi.getAllDatatypesExternalV1DlpDatatypesAllGet();
 			assert.ok(result.data, 'data should be returned');
 		});
 	});
@@ -281,7 +281,7 @@ describe('# AI Security API', () => {
 		let ruleId: string;
 
 		before(async () => {
-			const result = await ha.chatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
+			const result = await ha.ChatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
 				addChatsRuleRequest: {
 					name: 'Toggle Test Rule',
 					order: 0,
@@ -303,24 +303,24 @@ describe('# AI Security API', () => {
 
 		after(async () => {
 			try {
-				await ha.rulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
+				await ha.RulebaseApi.deleteRuleExternalV1RulesRuleIdDelete({ ruleId });
 			} catch { /* ignore */ }
 		});
 
 		it('should disable and re-enable a rule', async () => {
 			// Disable
-			await ha.rulebaseApi.setActiveExternalV1RulesSetActivePut({
+			await ha.RulebaseApi.setActiveExternalV1RulesSetActivePut({
 				commonSetActiveRequest: { rule_id: ruleId, active: false },
 			});
-			let rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			let rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			let rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.strictEqual(rule.active, false, 'rule should be inactive');
 
 			// Re-enable
-			await ha.rulebaseApi.setActiveExternalV1RulesSetActivePut({
+			await ha.RulebaseApi.setActiveExternalV1RulesSetActivePut({
 				commonSetActiveRequest: { rule_id: ruleId, active: true },
 			});
-			rb = await ha.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+			rb = await ha.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 			rule = rb.data.rules.find((r: any) => r.rule_id === ruleId);
 			assert.strictEqual(rule.active, true, 'rule should be active again');
 		});
