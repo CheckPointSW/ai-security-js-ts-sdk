@@ -96,9 +96,12 @@ export class SessionManager {
 		}
 	}
 
-	private scheduleRefresh(): void {
-		const delaySeconds = Math.max(this.tokenExpiresIn - KEEP_ALIVE_GRACE_SECONDS, 1);
-		logger(`Next token refresh for session ${this.sessionId} in ${delaySeconds}s`);
+	private scheduleRefresh(retryAttempt: number = 0): void {
+		const MAX_REFRESH_RETRIES = 3;
+		const delaySeconds = retryAttempt === 0
+			? Math.max(this.tokenExpiresIn - KEEP_ALIVE_GRACE_SECONDS, 1)
+			: Math.min(Math.pow(2, retryAttempt) * 5, 60); // exponential backoff: 10s, 20s, 40s (capped at 60s)
+		logger(`Next token refresh for session ${this.sessionId} in ${delaySeconds}s${retryAttempt > 0 ? ` (retry ${retryAttempt}/${MAX_REFRESH_RETRIES})` : ''}`);
 		this.refreshTimer = setTimeout(async () => {
 			try {
 				logger(`Refreshing CI token for session ${this.sessionId}`);
@@ -106,7 +109,14 @@ export class SessionManager {
 				this.scheduleRefresh(); // Schedule next refresh based on new expiresIn
 			} catch (err) {
 				errorLogger(`Token refresh failed for session ${this.sessionId}: ${err}`);
-				this.connectionStats = SDKConnectionState.CONNECTION_ISSUE;
+				if (retryAttempt < MAX_REFRESH_RETRIES) {
+					this.connectionStats = SDKConnectionState.CONNECTION_ISSUE;
+					this.scheduleRefresh(retryAttempt + 1);
+				} else {
+					errorLogger(`Token refresh exhausted all retries for session ${this.sessionId}, invalidating token`);
+					this.jwtToken = '';
+					this.connectionStats = SDKConnectionState.CONNECTION_ISSUE;
+				}
 			}
 		}, delaySeconds * 1000);
 	}
