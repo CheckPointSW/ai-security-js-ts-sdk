@@ -420,7 +420,7 @@ export class {{classname}} extends BaseAPI {
     {{#useSingleRequestParameter}}
     public {{nickname}}({{#allParams.0}}requestParameters: {{classname}}{{operationIdCamelCase}}Request{{^hasRequiredParams}} = {}{{/hasRequiredParams}}, {{/allParams.0}}options?: RawAxiosRequestConfig) {
         logger(`Sending operation "{{nickname}}"...`);
-        networkLogger(`Sending "{{nickname}}" {{httpMethod}} "{{{path}}}" | clientId=${this.configuration?.clientId?.substring(0, 8) || 'N/A'}...`);
+        networkLogger(`Sending "{{nickname}}" {{httpMethod}} "{{{path}}}"`);
         return {{classname}}Fp(this.configuration).{{nickname}}({{#allParams.0}}{{#allParams}}requestParameters.{{paramName}}, {{/allParams}}{{/allParams.0}}options).then((request) => request(this.axios, this.basePath)).then((response) => {
             logger(`Received operation "{{nickname}}" with status ${response.status}`);
             networkLogger(`Received "{{nickname}}": status=${response.status}, logger-token=${response.headers?.['logger-token'] || 'N/A'}, x-correlation-id=${response.headers?.['x-correlation-id'] || 'N/A'}`);
@@ -434,7 +434,7 @@ export class {{classname}} extends BaseAPI {
     {{^useSingleRequestParameter}}
     public {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: RawAxiosRequestConfig) {
         logger(`Sending operation "{{nickname}}"...`);
-        networkLogger(`Sending "{{nickname}}" {{httpMethod}} "{{{path}}}" | clientId=${this.configuration?.clientId?.substring(0, 8) || 'N/A'}...`);
+        networkLogger(`Sending "{{nickname}}" {{httpMethod}} "{{{path}}}"`);
         return {{classname}}Fp(this.configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options).then((request) => request(this.axios, this.basePath)).then((response) => {
             logger(`Received operation "{{nickname}}" with status ${response.status}`);
             networkLogger(`Received "{{nickname}}": status=${response.status}, logger-token=${response.headers?.['logger-token'] || 'N/A'}, x-correlation-id=${response.headers?.['x-correlation-id'] || 'N/A'}`);
