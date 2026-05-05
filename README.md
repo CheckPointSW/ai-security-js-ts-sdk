@@ -1,6 +1,8 @@
 # Check Point - AI Security JS/TS SDK (Workforce AI + Browse Security)
 
-[![Build](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/build.yml/badge.svg)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/build.yml) [![Tests](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/test.yml/badge.svg)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/test.yml) [![License](https://img.shields.io/github/license/CheckPointSW/ai-security-js-ts-sdk.svg?style=plastic)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/blob/release/LICENSE) [![npm version](https://img.shields.io/npm/v/@chkp/ai-security-sdk.svg?style=plastic)](https://www.npmjs.com/package/@chkp/ai-security-sdk)
+[![License](https://img.shields.io/github/license/CheckPointSW/ai-security-js-ts-sdk.svg?style=plastic)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/blob/release/LICENSE) [![Latest Release](https://img.shields.io/github/v/release/CheckPointSW/ai-security-js-ts-sdk?style=plastic)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/releases) [![npm version](https://img.shields.io/npm/v/@chkp/ai-security-sdk.svg?style=plastic)](https://www.npmjs.com/package/@chkp/ai-security-sdk)
+
+[![Build SDK Package](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/build.yml/badge.svg)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/build.yml) [![Publish SDK to npm](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/release.yml/badge.svg)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/actions/workflows/release.yml)
 
 This is the official Check Point AI Security SDK for JavaScript/TypeScript, covering both **Workforce AI** and **Browse Security** products.
 
