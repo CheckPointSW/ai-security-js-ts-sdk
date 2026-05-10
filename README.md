@@ -67,7 +67,7 @@ await ai.connect({
     gateway: 'https://cloudinfra-gw-us.portal.checkpoint.com',
 });
 
-const rulebase = await ai.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+const rulebase = await ai.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 console.log(rulebase.data);
 
 ai.disconnect();
@@ -85,7 +85,7 @@ await browse.connect({
     gateway: 'https://cloudinfra-gw-us.portal.checkpoint.com',
 });
 
-const rulebase = await browse.dlpPolicyApi.getDlpRulebaseExternalV1DlpRulebaseGet();
+const rulebase = await browse.DLPPolicyApi.getDlpRulebaseExternalV1DlpRulebaseGet();
 console.log(rulebase.data);
 
 browse.disconnect();
@@ -109,10 +109,10 @@ await ai.connect(auth);
 await browse.connect(auth);
 
 // Workforce AI
-const chats = await ai.chatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
+const chats = await ai.ChatsPolicyApi.getChatsRulebaseExternalV1ChatsRulebaseGet();
 
 // Browse Security
-const dlp = await browse.dlpPolicyApi.getDlpRulebaseExternalV1DlpRulebaseGet();
+const dlp = await browse.DLPPolicyApi.getDlpRulebaseExternalV1DlpRulebaseGet();
 
 ai.disconnect();
 browse.disconnect();
