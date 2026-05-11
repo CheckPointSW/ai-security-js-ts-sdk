@@ -21,7 +21,7 @@
   "author": "Haim Kastner <haimk@checkpoint.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.15.0",
+    "axios": "^1.16.0",
     "debug": "^4.3.4",
     "guid-typescript": "^1.0.9",
     "node-fetch": "^2.6.6"
