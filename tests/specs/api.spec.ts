@@ -56,7 +56,7 @@ describe('# AI Security API', () => {
 					description: 'Integration test',
 					order: 0,
 					policy: {
-						event_type: DLPEventType.FileUpload,
+						event_types: [DLPEventType.FileUpload],
 						action: 'prevent',
 						logging: LoggingStatus.Enabled,
 						services_and_application: { mode: SelectionMode.All },
@@ -286,7 +286,7 @@ describe('# AI Security API', () => {
 					name: 'Toggle Test Rule',
 					order: 0,
 					policy: {
-						event_type: DLPEventType.Prompt,
+						event_types: [DLPEventType.Prompt],
 						action: 'detect',
 						logging: LoggingStatus.Enabled,
 						services_and_application: { mode: SelectionMode.All },
