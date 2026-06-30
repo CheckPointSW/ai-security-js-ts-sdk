@@ -1,4 +1,4 @@
-# Check Point - AI Security JS/TS SDK (Workforce AI + Browse Security)
+#   Check Point - AI Security JS/TS SDK (Workforce AI + Browse Security)
 
 [![License](https://img.shields.io/github/license/CheckPointSW/ai-security-js-ts-sdk.svg?style=plastic)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/blob/release/LICENSE) [![Latest Release](https://img.shields.io/github/v/release/CheckPointSW/ai-security-js-ts-sdk?style=plastic)](https://github.com/CheckPointSW/ai-security-js-ts-sdk/releases) [![npm version](https://img.shields.io/npm/v/@chkp/ai-security-sdk.svg?style=plastic)](https://www.npmjs.com/package/@chkp/ai-security-sdk)
 
