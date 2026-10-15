@@ -8,8 +8,20 @@ import {
 	AssignmentType,
 	MCPServersMode,
 	MatchToolsMode,
+	URLFCategory,
 } from '../../src/generated/api';
 import { SDKConnectionState } from '../../src/interfaces/infra';
+
+function log422(e: any) {
+	if (e?.response?.status === 422) {
+		console.error('422 response body:', JSON.stringify(e.response.data, null, 2));
+	}
+}
+
+const ALL_GENAI_APPS = {
+	mode: SelectionMode.Selected,
+	category: [{ category_id: URLFCategory.NUMBER_60531762 }],
+};
 
 // Helper: delete all rules from a rulebase
 async function cleanupRulebase(getRulebase: () => Promise<any>) {
@@ -50,31 +62,36 @@ describe('# AI Security API', () => {
 		let ruleId: string;
 
 		it('should create a chats rule', async () => {
-			const result = await ha.ChatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
-				addChatsRuleRequest: {
-					name: 'Test DLP Rule',
-					description: 'Integration test',
-					order: 0,
-					policy: {
-						event_types: [DLPEventType.FileUpload],
-						action: 'prevent',
-						logging: LoggingStatus.Enabled,
-						services_and_application: { mode: SelectionMode.All },
-						data_types: [{
-							id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
-							name: 'Credit Card Number',
-							type: 'PRE_DEFINED',
+			try {
+				const result = await ha.ChatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
+					addChatsRuleRequest: {
+						name: 'Test DLP Rule',
+						description: 'Integration test',
+						order: 0,
+						policy: {
+							event_types: [DLPEventType.FileUpload],
+							action: 'prevent',
+							logging: LoggingStatus.Enabled,
+							services_and_application: ALL_GENAI_APPS,
+							data_types: [{
+								id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
+								name: 'Credit Card Number',
+								type: 'PRE_DEFINED',
+							}],
+						},
+						source: [{
+							assignment_id: 'entire-org',
+							display_name: 'Entire Organization',
+							assignment_type: AssignmentType.AssignmentTypeEntireOrg,
 						}],
 					},
-					source: [{
-						assignment_id: 'entire-org',
-						display_name: 'Entire Organization',
-						assignment_type: AssignmentType.AssignmentTypeEntireOrg,
-					}],
-				},
-			});
-			ruleId = result.data.rule_id;
-			assert.ok(ruleId, 'rule_id should be returned');
+				});
+				ruleId = result.data.rule_id;
+				assert.ok(ruleId, 'rule_id should be returned');
+			} catch (e: any) {
+				log422(e);
+				throw e;
+			}
 		});
 
 		it('should read the chats rule back', async () => {
@@ -281,24 +298,29 @@ describe('# AI Security API', () => {
 		let ruleId: string;
 
 		before(async () => {
-			const result = await ha.ChatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
-				addChatsRuleRequest: {
-					name: 'Toggle Test Rule',
-					order: 0,
-					policy: {
-						event_types: [DLPEventType.Prompt],
-						action: 'detect',
-						logging: LoggingStatus.Enabled,
-						services_and_application: { mode: SelectionMode.All },
-						data_types: [{
-							id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
-							name: 'Credit Card Number',
-							type: 'PRE_DEFINED',
-						}],
+			try {
+				const result = await ha.ChatsPolicyApi.addChatsRuleExternalV1ChatsRulePost({
+					addChatsRuleRequest: {
+						name: 'Toggle Test Rule',
+						order: 0,
+						policy: {
+							event_types: [DLPEventType.Prompt],
+							action: 'detect',
+							logging: LoggingStatus.Enabled,
+							services_and_application: ALL_GENAI_APPS,
+							data_types: [{
+								id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
+								name: 'Credit Card Number',
+								type: 'PRE_DEFINED',
+							}],
+						},
 					},
-				},
-			});
-			ruleId = result.data.rule_id;
+				});
+				ruleId = result.data.rule_id;
+			} catch (e: any) {
+				log422(e);
+				throw e;
+			}
 		});
 
 		after(async () => {
