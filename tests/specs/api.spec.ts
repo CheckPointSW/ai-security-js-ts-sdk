@@ -8,6 +8,7 @@ import {
 	AssignmentType,
 	MCPServersMode,
 	MatchToolsMode,
+	URLFCategory,
 } from '../../src/generated/api';
 import { SDKConnectionState } from '../../src/interfaces/infra';
 
@@ -16,6 +17,11 @@ function log422(e: any) {
 		console.error('422 response body:', JSON.stringify(e.response.data, null, 2));
 	}
 }
+
+const ALL_GENAI_APPS = {
+	mode: SelectionMode.Selected,
+	category: [{ category_id: URLFCategory.NUMBER_60531762 }],
+};
 
 // Helper: delete all rules from a rulebase
 async function cleanupRulebase(getRulebase: () => Promise<any>) {
@@ -66,7 +72,7 @@ describe('# AI Security API', () => {
 							event_types: [DLPEventType.FileUpload],
 							action: 'prevent',
 							logging: LoggingStatus.Enabled,
-							services_and_application: { mode: SelectionMode.All },
+							services_and_application: ALL_GENAI_APPS,
 							data_types: [{
 								id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
 								name: 'Credit Card Number',
@@ -301,7 +307,7 @@ describe('# AI Security API', () => {
 							event_types: [DLPEventType.Prompt],
 							action: 'detect',
 							logging: LoggingStatus.Enabled,
-							services_and_application: { mode: SelectionMode.All },
+							services_and_application: ALL_GENAI_APPS,
 							data_types: [{
 								id: 'cf0523c1-537e-4a4b-8bb8-084b7b9e0b45',
 								name: 'Credit Card Number',
