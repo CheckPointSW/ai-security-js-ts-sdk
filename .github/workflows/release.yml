@@ -1,9 +1,9 @@
-name: Publish SDK to npm
+name: Stage SDK to npm
 on:
   release:
     types: [published]
 jobs:
-  publish:
+  stage:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,7 +27,11 @@ jobs:
           yarn build
         env:
           SWAGGERHUB_API_KEY: ${{ secrets.SWAGGERHUB_API_KEY }}
-      - name: Publish to npm
-        run: npm publish --access public --provenance --tag latest
+      - name: Stage publish to npm
+        run: npm stage publish --access public --provenance --tag latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Remind to approve
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "::notice::Package @chkp/ai-security-sdk@${VERSION} has been staged on npm. A maintainer must approve with MFA at https://www.npmjs.com/package/@chkp/ai-security-sdk?activeTab=publishing"
